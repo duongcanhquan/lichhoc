@@ -2,17 +2,128 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Lịch Học | Cao đẳng Việt Mỹ Hà Nội</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #f8f9fa; }
-        iframe { width: 100%; height: 100%; border: none; }
+        :root { --indigo: #4f46e5; --pink: #ec4899; --glass: rgba(255, 255, 255, 0.95); }
+        body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); background-attachment: fixed; min-height: 100vh; color: #1f2937; margin: 0; padding: 0; }
+        .glass-header { background: var(--glass); backdrop-filter: blur(15px); padding: 8px 12px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: space-between; align-items: center; }
+        .logo-img { height: 35px; }
+        .total-badge { background: var(--indigo); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; }
+        .date-display { text-align: center; color: white; font-weight: 800; font-size: 1.1rem; margin: 10px 0; text-transform: uppercase; }
+        .tab-switcher { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+        .btn-day { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 5px 20px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: white; transition: 0.2s; cursor: pointer; }
+        .btn-day.active { background: white; color: var(--indigo); border: none; }
+        .filter-section { background: var(--glass); border-radius: 12px; padding: 10px; margin: 0 10px 10px 10px; }
+        .form-select, .form-control { font-size: 0.8rem; border-radius: 6px; height: 35px; font-weight: 600; }
+        .pagination-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; margin: 0 10px 15px 10px; }
+        .page-link { background: var(--glass); color: var(--indigo); border: none; padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; cursor: pointer; min-width: 32px; }
+        .page-link.active { background: var(--indigo); color: white; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 10px 30px 10px; }
+        .class-card { background: var(--glass); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: row; gap: 8px; height: 100%; }
+        .card-left { flex: 0 0 58%; border-right: 1px dashed rgba(0,0,0,0.1); padding-right: 5px; }
+        .card-right { flex: 1; padding-left: 2px; display: flex; flex-direction: column; justify-content: center; }
+        .badge-time { background: #000; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-bottom: 4px; }
+        .lop-label { font-size: 0.85rem; font-weight: 800; color: var(--indigo); line-height: 1.2; }
+        .phong-label { font-size: 0.8rem; font-weight: 800; color: var(--pink); margin-top: 2px; }
+        .mon-text { font-size: 0.7rem; font-weight: 600; color: #333; margin-top: 3px; line-height: 1.2; }
+        .gv-text { font-size: 0.7rem; font-weight: 700; color: var(--indigo); line-height: 1.1; }
+        .coso-text { font-size: 0.6rem; font-weight: 600; color: #666; margin-top: 2px; }
+        .note-box { font-size: 0.6rem; color: #dc2626; font-weight: 700; margin-top: 4px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 2px; }
+        @media (max-width: 1200px) { .schedule-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 900px) { .schedule-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .schedule-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; } }
     </style>
 </head>
 <body>
-    <iframe 
-        src="https://script.google.com/macros/s/AKfycbzRCcVtFJ7N0SmA-U8zPRKPWDLe1lMz2TmDjzdXIMSEm5prf1IU2Dzi4taDabnJ4BRK8Q/exec"
-        sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
-        allowfullscreen>
-    </iframe>
+    <header class="glass-header">
+        <div>
+            <img src="https://github.com/duongcanhquan/image/blob/main/logo%20vietmy.webp?raw=true" class="logo-img">
+            <span style="font-size:0.8rem; font-weight:800; color:var(--indigo); margin-left:5px;">LỊCH HỌC VIETMY</span>
+        </div>
+        <div id="totalBadge" class="total-badge">LỚP: 0</div>
+    </header>
+
+    <div id="app">
+        <div id="dateText" class="date-display">ĐANG TẢI DỮ LIỆU...</div>
+        <div class="tab-switcher">
+            <button id="btnNay" class="btn-day active" onclick="changeDay('nay')">HÔM NAY</button>
+            <button id="btnMai" class="btn-day" onclick="changeDay('mai')">NGÀY MAI</button>
+        </div>
+        <div class="filter-section shadow-sm">
+            <div class="row g-2">
+                <div class="col-4"><select id="selCoso" class="form-select" onchange="resetAndRender()"><option value="">CƠ SỞ</option></select></div>
+                <div class="col-4"><select id="selBuoi" class="form-select" onchange="resetAndRender()"><option value="">BUỔI</option><option value="SÁNG">SÁNG</option><option value="CHIỀU">CHIỀU</option><option value="TỐI">TỐI</option></select></div>
+                <div class="col-4"><input id="inpSearch" type="text" class="form-control" placeholder="TÌM..." onkeyup="resetAndRender()"></div>
+            </div>
+        </div>
+        <div class="pagination-container" id="pagination"></div>
+        <div id="loader" class="text-center py-4"><div class="spinner-border text-white spinner-border-sm"></div></div>
+        <div class="schedule-grid" id="gridContainer"></div>
+    </div>
+
+    <script>
+        // THAY URL WEB APP CỦA BẠN VÀO ĐÂY
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5OnenAjRUn6zPhrgb-Pt-br8r_AFv08Cmgy-7MCkJ1cB_PEDk7n6s_SW8B-Ahh6WqsQ/exec";
+        
+        let allData = {}; let currentDay = 'nay'; let currentPage = 1; const itemsPerPage = 20;
+
+        async function fetchData() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                allData = await response.json();
+                document.getElementById('loader').style.display = 'none';
+                if (allData.error) { document.getElementById('dateText').innerText = "Hệ thống đang bảo trì"; return; }
+                const combined = [...(allData.nay?.schedule || []), ...(allData.mai?.schedule || [])];
+                const cosos = [...new Set(combined.map(d => d.coso))].filter(c => c);
+                cosos.forEach(c => document.getElementById('selCoso').innerHTML += `<option value="${c}">${c}</option>`);
+                render();
+            } catch (e) { document.getElementById('dateText').innerText = "Lỗi kết nối dữ liệu"; }
+        }
+
+        function changeDay(day) {
+            currentDay = day; currentPage = 1;
+            document.getElementById('btnNay').classList.toggle('active', day === 'nay');
+            document.getElementById('btnMai').classList.toggle('active', day === 'mai');
+            render();
+        }
+
+        function resetAndRender() { currentPage = 1; render(); }
+
+        function render() {
+            const container = document.getElementById('gridContainer');
+            const paginContainer = document.getElementById('pagination');
+            const data = allData[currentDay];
+            if (!data) return;
+            document.getElementById('dateText').innerText = data.date;
+            const coso = document.getElementById('selCoso').value;
+            const buoi = document.getElementById('selBuoi').value;
+            const search = document.getElementById('inpSearch').value.toLowerCase();
+            const filtered = data.schedule.filter(i => {
+                const matchSearch = !search || i.lop.toLowerCase().includes(search) || i.mon.toLowerCase().includes(search) || i.gv.toLowerCase().includes(search);
+                return (!coso || i.coso === coso) && (!buoi || i.buoi.toUpperCase().includes(buoi)) && matchSearch;
+            });
+            document.getElementById('totalBadge').innerText = `TỔNG: ${filtered.length} LỚP`;
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage;
+            const paginatedItems = filtered.slice(start, start + itemsPerPage);
+            container.innerHTML = paginatedItems.map(i => `
+                <div class="class-card">
+                    <div class="card-left"><div class="badge-time">${i.gio}</div><div class="lop-label">LỚP: ${i.lop}</div><div class="phong-label">PHÒNG: ${i.phong}</div><div class="mon-text">${i.mon}</div></div>
+                    <div class="card-right"><div class="gv-text">GV: ${i.gv}</div><div class="coso-text">${i.coso}</div>${i.note ? `<div class="note-box">! ${i.note}</div>` : ''}</div>
+                </div>`).join('');
+            paginContainer.innerHTML = "";
+            if (totalPages > 1) {
+                for (let i = 1; i <= totalPages; i++) {
+                    paginContainer.innerHTML += `<button class="page-link ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                }
+            }
+        }
+        function goToPage(page) { currentPage = page; render(); document.querySelector('.tab-switcher').scrollIntoView({ behavior: 'smooth' }); }
+        
+        fetchData();
+    </script>
 </body>
 </html>
