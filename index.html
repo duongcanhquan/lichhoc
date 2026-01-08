@@ -70,17 +70,36 @@
         
         let allData = {}; let currentDay = 'nay'; let currentPage = 1; const itemsPerPage = 20;
 
-        async function fetchData() {
+    async function fetchData() {
             try {
-                const response = await fetch(SCRIPT_URL);
+                // Thêm thuộc tính redirect: 'follow' để xử lý cơ chế bảo mật của Google
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'GET',
+                    redirect: 'follow' 
+                });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                
                 allData = await response.json();
                 document.getElementById('loader').style.display = 'none';
-                if (allData.error) { document.getElementById('dateText').innerText = "Hệ thống đang bảo trì"; return; }
+                
+                if (allData.error) { 
+                    document.getElementById('dateText').innerText = "Hệ thống đang bảo trì"; 
+                    return; 
+                }
+                
                 const combined = [...(allData.nay?.schedule || []), ...(allData.mai?.schedule || [])];
                 const cosos = [...new Set(combined.map(d => d.coso))].filter(c => c);
+                
+                // Xóa bớt tùy chọn cũ trước khi thêm mới để tránh lặp
+                document.getElementById('selCoso').innerHTML = '<option value="">CƠ SỞ</option>';
                 cosos.forEach(c => document.getElementById('selCoso').innerHTML += `<option value="${c}">${c}</option>`);
+                
                 render();
-            } catch (e) { document.getElementById('dateText').innerText = "Lỗi kết nối dữ liệu"; }
+            } catch (e) { 
+                console.error("Lỗi chi tiết:", e);
+                document.getElementById('dateText').innerText = "Lỗi kết nối dữ liệu. Vui lòng thử lại!"; 
+            }
         }
 
         function changeDay(day) {
