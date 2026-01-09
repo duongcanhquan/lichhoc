@@ -27,9 +27,35 @@
         .page-link { background: var(--glass); color: var(--indigo); border: none; padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; cursor: pointer; min-width: 32px; }
         .page-link.active { background: var(--indigo); color: white; }
 
-        .schedule-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 10px 30px 10px; contain: content; }
+        /* PHẦN SỬA LỖI HIỂN THỊ LỆCH */
+        .schedule-grid { 
+            display: grid; 
+            /* Tự động tính toán số cột dựa trên màn hình (tối thiểu 165px/ô) */
+            grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); 
+            gap: 10px; 
+            padding: 0 10px 30px 10px; 
+            contain: content;
+        }
 
-        .class-card { background: var(--glass); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: row; gap: 8px; height: 100%; }
+        .class-card { 
+            background: var(--glass); 
+            border-radius: 12px; 
+            padding: 10px; 
+            border: 1px solid rgba(255,255,255,0.6); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+            display: flex; 
+            flex-direction: row; 
+            gap: 8px; 
+            height: 100%; 
+            word-break: break-word; /* Chống tràn chữ */
+        }
+
+        /* Responsive cho điện thoại cực nhỏ */
+        @media (max-width: 380px) {
+            .class-card { flex-direction: column; }
+            .card-left { border-right: none !important; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 5px; }
+        }
+
         .card-left { flex: 0 0 58%; border-right: 1px dashed rgba(0,0,0,0.1); padding-right: 5px; }
         .card-right { flex: 1; padding-left: 2px; display: flex; flex-direction: column; justify-content: center; }
         
@@ -40,16 +66,12 @@
         .gv-text { font-size: 0.7rem; font-weight: 700; color: var(--indigo); line-height: 1.1; }
         .coso-text { font-size: 0.6rem; font-weight: 600; color: #666; margin-top: 2px; }
         .note-box { font-size: 0.6rem; color: #dc2626; font-weight: 700; margin-top: 4px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 2px; }
-
-        @media (max-width: 1200px) { .schedule-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 900px) { .schedule-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .schedule-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; } }
     </style>
 </head>
 <body>
     <header class="glass-header">
         <div>
-            <img src="https://github.com/duongcanhquan/image/blob/main/logo%20vietmy.webp?raw=true" class="logo-img">
+            <img src="https://github.com/duongcanhquan/image/blob/main/logo%20vietmy.webp?raw=true" class="logo-img" onerror="this.src='https://via.placeholder.com/35x35?text=VM'">
             <span style="font-size:0.8rem; font-weight:800; color:var(--indigo); margin-left:5px;">LỊCH HỌC VIETMY</span>
         </div>
         <div id="totalBadge" class="total-badge">LỚP: 0</div>
@@ -83,7 +105,6 @@
         let allData = {}; let currentDay = 'nay'; let currentPage = 1; const itemsPerPage = 20;
 
         async function fetchData() {
-            // Hiển thị dữ liệu cũ từ bộ nhớ máy nếu có để load cực nhanh
             const localData = localStorage.getItem('vm_cache');
             if (localData) {
                 allData = JSON.parse(localData);
@@ -93,7 +114,6 @@
             }
 
             try {
-                // Thêm timestamp để xóa cache Google sau mỗi 1 phút
                 const cb = SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + 't=' + Math.floor(Date.now()/60000);
                 const response = await fetch(cb, { redirect: 'follow' });
                 const newData = await response.json();
@@ -175,7 +195,7 @@
 
         function goToPage(page) {
             currentPage = page; render();
-            document.querySelector('.tab-switcher').scrollIntoView({ behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         fetchData();
