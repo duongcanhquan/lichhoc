@@ -9,56 +9,23 @@
     <style>
         :root { --indigo: #4f46e5; --pink: #ec4899; --glass: rgba(255, 255, 255, 0.95); }
         body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); background-attachment: fixed; min-height: 100vh; color: #1f2937; margin: 0; padding: 0; }
-        
         .glass-header { background: var(--glass); backdrop-filter: blur(15px); padding: 8px 12px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: space-between; align-items: center; }
         .logo-img { height: 35px; }
         .total-badge { background: var(--indigo); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; }
-
         .date-display { text-align: center; color: white; font-weight: 800; font-size: 1.1rem; margin: 10px 0; text-transform: uppercase; }
-        
         .tab-switcher { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
         .btn-day { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 5px 20px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: white; transition: 0.2s; cursor: pointer; }
         .btn-day.active { background: white; color: var(--indigo); border: none; }
-
         .filter-section { background: var(--glass); border-radius: 12px; padding: 10px; margin: 0 10px 10px 10px; }
         .form-select, .form-control { font-size: 0.8rem; border-radius: 6px; height: 35px; font-weight: 600; }
-
         .pagination-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; margin: 0 10px 15px 10px; min-height: 32px; }
         .page-link { background: var(--glass); color: var(--indigo); border: none; padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; cursor: pointer; min-width: 32px; }
         .page-link.active { background: var(--indigo); color: white; }
-
-        /* PHẦN SỬA LỖI HIỂN THỊ LỆCH */
-        .schedule-grid { 
-            display: grid; 
-            /* Tự động tính toán số cột dựa trên màn hình (tối thiểu 165px/ô) */
-            grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); 
-            gap: 10px; 
-            padding: 0 10px 30px 10px; 
-            contain: content;
-        }
-
-        .class-card { 
-            background: var(--glass); 
-            border-radius: 12px; 
-            padding: 10px; 
-            border: 1px solid rgba(255,255,255,0.6); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
-            display: flex; 
-            flex-direction: row; 
-            gap: 8px; 
-            height: 100%; 
-            word-break: break-word; /* Chống tràn chữ */
-        }
-
-        /* Responsive cho điện thoại cực nhỏ */
-        @media (max-width: 380px) {
-            .class-card { flex-direction: column; }
-            .card-left { border-right: none !important; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 5px; }
-        }
-
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 10px; padding: 0 10px 30px 10px; }
+        .class-card { background: var(--glass); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: row; gap: 8px; height: 100%; word-break: break-word; }
+        @media (max-width: 380px) { .class-card { flex-direction: column; } .card-left { border-right: none !important; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 5px; } }
         .card-left { flex: 0 0 58%; border-right: 1px dashed rgba(0,0,0,0.1); padding-right: 5px; }
         .card-right { flex: 1; padding-left: 2px; display: flex; flex-direction: column; justify-content: center; }
-        
         .badge-time { background: #000; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-bottom: 4px; }
         .lop-label { font-size: 0.85rem; font-weight: 800; color: var(--indigo); line-height: 1.2; }
         .phong-label { font-size: 0.8rem; font-weight: 800; color: var(--pink); margin-top: 2px; }
@@ -79,29 +46,24 @@
 
     <div id="app">
         <div id="dateText" class="date-display">ĐANG TẢI...</div>
-
         <div class="tab-switcher">
-            <button id="btnNay" class="btn-day active" onclick="changeDay('nay')"> LỊCH HÔM NAY</button>
-            <button id="btnMai" class="btn-day" onclick="changeDay('mai')"> NGÀY TIẾP</button>
+            <button id="btnNay" class="btn-day active" onclick="changeDay('nay')">LỊCH HÔM NAY</button>
+            <button id="btnMai" class="btn-day" onclick="changeDay('mai')">NGÀY TIẾP</button>
         </div>
-
         <div class="filter-section shadow-sm">
             <div class="row g-2">
                 <div class="col-4"><select id="selCoso" class="form-select" onchange="resetAndRender()"><option value="">CƠ SỞ</option></select></div>
                 <div class="col-4"><select id="selBuoi" class="form-select" onchange="resetAndRender()"><option value="">BUỔI</option><option value="SÁNG">SÁNG</option><option value="CHIỀU">CHIỀU</option><option value="TỐI">TỐI</option></select></div>
-                <div class="col-4"><input id="inpSearch" type="text" class="form-control" placeholder="TÌM..." onkeyup="resetAndRender()"></div>
+                <div class="col-4"><input id="inpSearch" type="text" class="form-control" placeholder="Lớp, GV, Phòng..." oninput="resetAndRender()"></div>
             </div>
         </div>
-
         <div class="pagination-container" id="pagination"></div>
         <div id="loader" class="text-center py-4"><div class="spinner-border text-white spinner-border-sm"></div></div>
         <div class="schedule-grid" id="gridContainer"></div>
     </div>
 
     <script>
-        // THAY URL WEB APP CỦA BẠN VÀO ĐÂY
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfdMqp0x_IkwFA-1fxBAJONI4WmkEwyQS6Sxpi2eyz1Ft-EIRA-s50ociHmscsmvIu4A/exec";
-        
         let allData = {}; let currentDay = 'nay'; let currentPage = 1; const itemsPerPage = 20;
 
         async function fetchData() {
@@ -109,35 +71,29 @@
             if (localData) {
                 allData = JSON.parse(localData);
                 document.getElementById('loader').style.display = 'none';
-                updateCosoList();
-                render();
+                updateCosoList(); render();
             }
-
             try {
                 const cb = SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + 't=' + Math.floor(Date.now()/60000);
                 const response = await fetch(cb, { redirect: 'follow' });
                 const newData = await response.json();
-                
                 if (JSON.stringify(newData) !== localData) {
                     allData = newData;
                     localStorage.setItem('vm_cache', JSON.stringify(newData));
                     document.getElementById('loader').style.display = 'none';
-                    updateCosoList();
-                    render();
+                    updateCosoList(); render();
                 }
-            } catch (e) {
-                if (!localData) document.getElementById('dateText').innerText = "LỖI KẾT NỐI!";
-            }
+            } catch (e) { if (!localData) document.getElementById('dateText').innerText = "LỖI KẾT NỐI!"; }
         }
 
         function updateCosoList() {
             const combined = [...(allData.nay?.schedule || []), ...(allData.mai?.schedule || [])];
             const cosos = [...new Set(combined.map(d => d.coso))].filter(c => c);
             const sel = document.getElementById('selCoso');
-            const currentVal = sel.value;
+            const cur = sel.value;
             sel.innerHTML = '<option value="">CƠ SỞ</option>';
             cosos.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
-            sel.value = currentVal;
+            sel.value = cur;
         }
 
         function changeDay(day) {
@@ -158,11 +114,22 @@
             
             const coso = document.getElementById('selCoso').value;
             const buoi = document.getElementById('selBuoi').value;
-            const search = document.getElementById('inpSearch').value.toLowerCase();
+            const search = document.getElementById('inpSearch').value.trim().toLowerCase();
 
             const filtered = data.schedule.filter(i => {
-                const matchSearch = !search || i.lop.toLowerCase().includes(search) || i.mon.toLowerCase().includes(search) || i.gv.toLowerCase().includes(search);
-                return (!coso || i.coso === coso) && (!buoi || i.buoi.toUpperCase().includes(buoi)) && matchSearch;
+                // ÉP KIỂU STRING ĐỂ TRÁNH LỖI KHI DỮ LIỆU LÀ SỐ
+                const sLop = String(i.lop || "").toLowerCase();
+                const sGv = String(i.gv || "").toLowerCase();
+                const sMon = String(i.mon || "").toLowerCase();
+                const sPhong = String(i.phong || "").toLowerCase();
+
+                const matchSearch = !search || 
+                    sLop.includes(search) || 
+                    sGv.includes(search) || 
+                    sMon.includes(search) || 
+                    sPhong.includes(search);
+                
+                return (!coso || i.coso === coso) && (!buoi || String(i.buoi).toUpperCase().includes(buoi)) && matchSearch;
             });
 
             document.getElementById('totalBadge').innerText = `TỔNG: ${filtered.length} LỚP`;
@@ -170,12 +137,15 @@
             const start = (currentPage - 1) * itemsPerPage;
             const paginatedItems = filtered.slice(start, start + itemsPerPage);
 
-            container.innerHTML = paginatedItems.map(i => `
-                <div class="class-card">
+            container.innerHTML = paginatedItems.map(i => {
+                let p = String(i.phong || "");
+                let textPhong = (p.toLowerCase().includes("phòng") || p.toLowerCase().includes("online")) ? p : "Phòng " + p;
+                
+                return `<div class="class-card">
                     <div class="card-left">
                         <div class="badge-time">${i.gio}</div>
-                        <div class="lop-label">LỚP: ${i.lop}</div>
-                        <div class="phong-label">PHÒNG: ${i.phong}</div>
+                        <div class="lop-label">Lớp: ${i.lop}</div>
+                        <div class="phong-label">${textPhong}</div>
                         <div class="mon-text">${i.mon}</div>
                     </div>
                     <div class="card-right">
@@ -183,7 +153,8 @@
                         <div class="coso-text">${i.coso}</div>
                         ${i.note ? `<div class="note-box">! ${i.note}</div>` : ''}
                     </div>
-                </div>`).join('');
+                </div>`
+            }).join('');
 
             paginContainer.innerHTML = "";
             if (totalPages > 1) {
@@ -193,11 +164,7 @@
             }
         }
 
-        function goToPage(page) {
-            currentPage = page; render();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
+        function goToPage(page) { currentPage = page; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
         fetchData();
     </script>
 </body>
