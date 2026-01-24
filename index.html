@@ -45,11 +45,11 @@
             padding: 4px 10px; border-radius: 20px; white-space: nowrap;
         }
 
-        /* FULL DATE DISPLAY */
+        /* NGÀY THÁNG FULL */
         .full-date-display {
-            text-align: center; color: white; font-weight: 700; font-size: 0.85rem;
-            padding: 5px 0; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            text-transform: uppercase;
+            text-align: center; color: white; font-weight: 700; font-size: 0.9rem;
+            padding: 10px 0 5px 0; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
 
         /* DATE NAVIGATOR */
@@ -61,17 +61,23 @@
         .date-btn.active { background: #fff; color: var(--accent); transform: scale(1.05); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
         .date-btn.disabled { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
 
-        /* GRID SYSTEM: 5 CỘT DESKTOP - 2 CỘT MOBILE */
+        /* --- GRID SYSTEM: FIX CỨNG 5 CỘT DESKTOP --- */
         .schedule-grid {
             display: grid;
             gap: 10px; padding: 10px;
             grid-template-columns: repeat(2, 1fr); /* Mobile: 2 cột */
             align-items: stretch;
         }
-        /* Desktop: 5 cột theo yêu cầu */
-        @media (min-width: 1200px) { .schedule-grid { grid-template-columns: repeat(5, 1fr); } }
-        /* Tablet: 3 cột */
-        @media (min-width: 768px) and (max-width: 1199px) { .schedule-grid { grid-template-columns: repeat(3, 1fr); } }
+        
+        /* Desktop (Màn hình lớn): CHÍNH XÁC 5 CỘT */
+        @media (min-width: 1200px) { 
+            .schedule-grid { grid-template-columns: repeat(5, 1fr) !important; } 
+        }
+        
+        /* Laptop/Tablet (Màn hình trung bình): 3 cột */
+        @media (min-width: 768px) and (max-width: 1199px) { 
+            .schedule-grid { grid-template-columns: repeat(3, 1fr); } 
+        }
 
         /* CARD DESIGN */
         .class-card {
@@ -82,16 +88,16 @@
             height: 100%; overflow: hidden;
         }
         
-        .card-body-custom { padding: 8px; flex: 1; display: flex; gap: 5px; }
+        .card-body-custom { padding: 8px; flex: 1; display: flex; gap: 6px; }
 
         .col-left { 
-            flex: 1.1; display: flex; flex-direction: column; gap: 3px; 
-            border-right: 1px dashed #cbd5e1; padding-right: 5px;
+            flex: 1.1; display: flex; flex-direction: column; gap: 4px; 
+            border-right: 1px dashed #cbd5e1; padding-right: 6px;
             overflow: hidden; 
         }
         .col-right { 
-            flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 5px; 
-            padding-left: 3px; overflow: hidden;
+            flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 6px; 
+            padding-left: 2px; overflow: hidden;
         }
 
         /* TEXT STYLING */
@@ -104,17 +110,21 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .text-subject { 
-            font-size: 0.65rem; font-weight: 600; color: #64748b; line-height: 1.2;
+            font-size: 0.65rem; font-weight: 600; color: #64748b; line-height: 1.25;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-            height: 2.4em; 
+            height: 2.5em; /* Cố định chiều cao dòng môn */
         }
         
-        /* Tên Giáo Viên: Cho phép xuống dòng */
+        /* --- TÊN GIẢNG VIÊN: FIX XUỐNG DÒNG --- */
         .text-gv { 
-            color: var(--primary); font-size: 0.65rem; font-weight: 700;
+            color: var(--primary); font-size: 0.7rem; font-weight: 700;
             display: flex; align-items: flex-start; gap: 4px;
-            white-space: normal; /* Cho phép xuống dòng */
-            line-height: 1.1;
+            /* Quan trọng: Cho phép xuống dòng */
+            white-space: normal !important; 
+            overflow: visible !important;
+            text-overflow: clip !important;
+            line-height: 1.2;
+            word-break: break-word; /* Ngắt từ nếu cần */
         }
         
         .info-row { font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; gap: 4px; color: #64748b; }
@@ -136,7 +146,7 @@
         /* PAGINATION */
         .pagination-wrapper { display: flex; gap: 5px; padding: 5px 15px 10px 15px; flex-wrap: wrap; }
         .page-btn { 
-            width: 30px; height: 30px; border: none; border-radius: 8px; background: rgba(255,255,255,0.6); 
+            width: 32px; height: 32px; border: none; border-radius: 8px; background: rgba(255,255,255,0.6); 
             font-weight: 800; color: #555; font-size: 0.8rem; transition: 0.2s;
         }
         .page-btn.active { background: var(--accent); color: white; transform: scale(1.1); }
@@ -178,7 +188,7 @@
     </div>
     
     <div class="pagination-wrapper" id="pagination"></div>
-    <div id="loader"><div class="spinner-border text-white" role="status"></div><div class="text-white mt-2">Đang tải nhanh...</div></div>
+    <div id="loader"><div class="spinner-border text-white" role="status"></div></div>
     <div class="schedule-grid" id="grid"></div>
 
     <script>
@@ -189,7 +199,9 @@
         let allData = { schedule: [], available: [] };
         let currentDate = "";
         let currentPage = 1;
-        const itemsPerPage = 20; // 5 cột x 4 dòng = 20 (Số đẹp cho lưới 5 cột)
+        
+        // Items per page = 20 (5 cột x 4 dòng = 20) để lấp đầy đẹp mắt
+        const itemsPerPage = 20; 
 
         async function init() {
             const d = new Date();
@@ -202,21 +214,17 @@
             document.getElementById('grid').innerHTML = '';
             document.getElementById('pagination').innerHTML = '';
             currentDate = dateStr;
-            
-            // Cập nhật hiển thị ngày đầy đủ (Thứ..., ngày...)
             updateFullDateDisplay(dateStr);
             renderDateNav(); 
 
             try {
-                // Thêm timestamp để bypass browser cache nhưng server apps script sẽ dùng cache của nó
+                // Thêm timestamp để bypass cache trình duyệt
                 const res = await fetch(`${API_URL}?date=${dateStr}&t=${Date.now()}`);
                 const data = await res.json();
                 
                 if(data.error) { alert("Lỗi: " + data.error); return; }
 
                 allData.available = data.available_sheets || [];
-                
-                // Sắp xếp thời gian
                 let rawSchedule = data.schedule || [];
                 allData.schedule = rawSchedule.sort((a, b) => parseTime(a.gio) - parseTime(b.gio));
 
@@ -262,12 +270,9 @@
 
             const filtered = allData.schedule.filter(item => {
                 const searchStr = `${item.lop} ${item.mon} ${item.gv} ${item.phong} ${item.coso}`.toLowerCase();
-                
-                // Logic lọc: Cơ sở, Buổi, Search
                 const matchCoso = !cosoFilter || item.coso === cosoFilter;
                 const matchBuoi = !buoiFilter || (item.buoi && item.buoi.toUpperCase().includes(buoiFilter));
                 const matchSearch = !searchFilter || searchStr.includes(searchFilter);
-
                 return matchCoso && matchBuoi && matchSearch;
             });
 
@@ -306,7 +311,10 @@
                             <div class="text-subject" title="${item.mon}">${item.mon}</div>
                         </div>
                         <div class="col-right">
-                            <div class="text-gv"><i class="fa-solid fa-user"></i> <span>${item.gv || '--'}</span></div>
+                            <div class="text-gv">
+                                <i class="fa-solid fa-user" style="margin-top:2px;"></i> 
+                                <span>${item.gv || '--'}</span>
+                            </div>
                             <div class="info-row"><i class="fa-solid fa-map-pin"></i> ${item.coso}</div>
                             <div class="badge-room">${phongHienThi}</div>
                         </div>
@@ -342,7 +350,6 @@
                 const d = new Date(); d.setDate(today.getDate() + i);
                 const dStr = formatDate(d);
                 let isDisabled = (allData.available.length > 0 && !allData.available.includes(dStr));
-                
                 const btn = document.createElement('button');
                 btn.className = `date-btn ${dStr === currentDate ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
                 btn.innerHTML = `<div>${i===0?'HÔM NAY':d.getDate()+'/'+(d.getMonth()+1)}</div>`;
