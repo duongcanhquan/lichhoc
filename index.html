@@ -1,171 +1,364 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Lịch Học | Cao đẳng Việt Mỹ Hà Nội</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Lịch Học VietMy College</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
     <style>
-        :root { --indigo: #4f46e5; --pink: #ec4899; --glass: rgba(255, 255, 255, 0.95); }
-        body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); background-attachment: fixed; min-height: 100vh; color: #1f2937; margin: 0; padding: 0; }
-        .glass-header { background: var(--glass); backdrop-filter: blur(15px); padding: 8px 12px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: space-between; align-items: center; }
-        .logo-img { height: 35px; }
-        .total-badge { background: var(--indigo); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; }
-        .date-display { text-align: center; color: white; font-weight: 800; font-size: 1.1rem; margin: 10px 0; text-transform: uppercase; }
-        .tab-switcher { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
-        .btn-day { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 5px 20px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: white; transition: 0.2s; cursor: pointer; }
-        .btn-day.active { background: white; color: var(--indigo); border: none; }
-        .filter-section { background: var(--glass); border-radius: 12px; padding: 10px; margin: 0 10px 10px 10px; }
-        .form-select, .form-control { font-size: 0.8rem; border-radius: 6px; height: 35px; font-weight: 600; }
-        .pagination-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; margin: 0 10px 15px 10px; min-height: 32px; }
-        .page-link { background: var(--glass); color: var(--indigo); border: none; padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; cursor: pointer; min-width: 32px; }
-        .page-link.active { background: var(--indigo); color: white; }
-        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 10px; padding: 0 10px 30px 10px; }
-        .class-card { background: var(--glass); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: row; gap: 8px; height: 100%; word-break: break-word; }
-        @media (max-width: 380px) { .class-card { flex-direction: column; } .card-left { border-right: none !important; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 5px; } }
-        .card-left { flex: 0 0 58%; border-right: 1px dashed rgba(0,0,0,0.1); padding-right: 5px; }
-        .card-right { flex: 1; padding-left: 2px; display: flex; flex-direction: column; justify-content: center; }
-        .badge-time { background: #000; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; display: inline-block; margin-bottom: 4px; }
-        .lop-label { font-size: 0.85rem; font-weight: 800; color: var(--indigo); line-height: 1.2; }
-        .phong-label { font-size: 0.8rem; font-weight: 800; color: var(--pink); margin-top: 2px; }
-        .mon-text { font-size: 0.7rem; font-weight: 600; color: #333; margin-top: 3px; line-height: 1.2; }
-        .gv-text { font-size: 0.7rem; font-weight: 700; color: var(--indigo); line-height: 1.1; }
-        .coso-text { font-size: 0.6rem; font-weight: 600; color: #666; margin-top: 2px; }
-        .note-box { font-size: 0.6rem; color: #dc2626; font-weight: 700; margin-top: 4px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 2px; }
+        :root {
+            --glass: rgba(255, 255, 255, 0.96);
+            --primary: #667eea; --accent: #764ba2;
+            --success: #059669; --danger: #dc2626;
+            --bg-grad: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-grad); background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh; margin: 0; color: #333; padding-bottom: 50px;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* HEADER */
+        .glass-header {
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            padding: 8px 15px; position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-left { display: flex; align-items: center; gap: 8px; }
+        .logo-img { height: 38px; width: auto; }
+        .logo-text { 
+            font-weight: 800; font-size: 0.8rem; text-transform: uppercase;
+            background: linear-gradient(to right, #667eea, #764ba2); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            line-height: 1.1;
+        }
+        .total-badge {
+            background: #212529; color: white; font-weight: 700; font-size: 0.7rem;
+            padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+        }
+
+        /* FULL DATE DISPLAY */
+        .full-date-display {
+            text-align: center; color: white; font-weight: 700; font-size: 0.85rem;
+            padding: 5px 0; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+        }
+
+        /* DATE NAVIGATOR */
+        .date-container { overflow-x: auto; white-space: nowrap; padding: 5px 10px; text-align: center; scrollbar-width: none; }
+        .date-btn {
+            border: none; background: rgba(255,255,255,0.4); padding: 6px 12px; margin: 0 2px; border-radius: 10px;
+            font-weight: 700; font-size: 0.75rem; transition: 0.3s; display: inline-block;
+        }
+        .date-btn.active { background: #fff; color: var(--accent); transform: scale(1.05); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
+        .date-btn.disabled { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
+
+        /* GRID SYSTEM: 5 CỘT DESKTOP - 2 CỘT MOBILE */
+        .schedule-grid {
+            display: grid;
+            gap: 10px; padding: 10px;
+            grid-template-columns: repeat(2, 1fr); /* Mobile: 2 cột */
+            align-items: stretch;
+        }
+        /* Desktop: 5 cột theo yêu cầu */
+        @media (min-width: 1200px) { .schedule-grid { grid-template-columns: repeat(5, 1fr); } }
+        /* Tablet: 3 cột */
+        @media (min-width: 768px) and (max-width: 1199px) { .schedule-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* CARD DESIGN */
+        .class-card {
+            background: var(--glass); border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.5);
+            display: flex; flex-direction: column; justify-content: space-between;
+            height: 100%; overflow: hidden;
+        }
+        
+        .card-body-custom { padding: 8px; flex: 1; display: flex; gap: 5px; }
+
+        .col-left { 
+            flex: 1.1; display: flex; flex-direction: column; gap: 3px; 
+            border-right: 1px dashed #cbd5e1; padding-right: 5px;
+            overflow: hidden; 
+        }
+        .col-right { 
+            flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 5px; 
+            padding-left: 3px; overflow: hidden;
+        }
+
+        /* TEXT STYLING */
+        .badge-time { 
+            background: var(--accent); color: white; font-size: 0.65rem; font-weight: 800; 
+            padding: 2px 6px; border-radius: 4px; align-self: flex-start;
+        }
+        .text-class { 
+            font-size: 0.9rem; font-weight: 800; color: #1a202c; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .text-subject { 
+            font-size: 0.65rem; font-weight: 600; color: #64748b; line-height: 1.2;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            height: 2.4em; 
+        }
+        
+        /* Tên Giáo Viên: Cho phép xuống dòng */
+        .text-gv { 
+            color: var(--primary); font-size: 0.65rem; font-weight: 700;
+            display: flex; align-items: flex-start; gap: 4px;
+            white-space: normal; /* Cho phép xuống dòng */
+            line-height: 1.1;
+        }
+        
+        .info-row { font-size: 0.6rem; font-weight: 700; display: flex; align-items: center; gap: 4px; color: #64748b; }
+        
+        .badge-room { 
+            background: #d1fae5; color: var(--success); padding: 2px 6px; border-radius: 8px; 
+            font-weight: 800; font-size: 0.65rem; border: 1px solid #34d399; width: fit-content;
+        }
+
+        /* NOTE FIX 2 DÒNG */
+        .card-footer-note {
+            background: #fff1f2; color: var(--danger); font-size: 0.6rem; font-weight: 700;
+            padding: 5px 8px; border-top: 1px dashed rgba(220,38,38,0.2);
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            height: 28px; line-height: 1.2; box-sizing: content-box;
+        }
+        .note-empty { background: transparent; border-top: 1px dashed transparent; }
+
+        /* PAGINATION */
+        .pagination-wrapper { display: flex; gap: 5px; padding: 5px 15px 10px 15px; flex-wrap: wrap; }
+        .page-btn { 
+            width: 30px; height: 30px; border: none; border-radius: 8px; background: rgba(255,255,255,0.6); 
+            font-weight: 800; color: #555; font-size: 0.8rem; transition: 0.2s;
+        }
+        .page-btn.active { background: var(--accent); color: white; transform: scale(1.1); }
+
+        #loader { text-align: center; color: white; padding: 40px; display: none; }
     </style>
 </head>
 <body>
-    <header class="glass-header">
-        <div>
-            <img src="https://github.com/duongcanhquan/image/blob/main/logo%20vietmy.webp?raw=true" class="logo-img" onerror="this.src='https://via.placeholder.com/35x35?text=VM'">
-            <span style="font-size:0.8rem; font-weight:800; color:var(--indigo); margin-left:5px;">LỊCH HỌC VIETMY</span>
-        </div>
-        <div id="totalBadge" class="total-badge">LỚP: 0</div>
-    </header>
 
-    <div id="app">
-        <div id="dateText" class="date-display">ĐANG TẢI...</div>
-        <div class="tab-switcher">
-            <button id="btnNay" class="btn-day active" onclick="changeDay('nay')">LỊCH HÔM NAY</button>
-            <button id="btnMai" class="btn-day" onclick="changeDay('mai')">NGÀY TIẾP</button>
+    <div class="glass-header">
+        <div class="header-left">
+            <img src="https://github.com/duongcanhquan/image/blob/main/Logo%20Cao%20%C4%91a%CC%86%CC%89ng%20Vie%CC%A3%CC%82t%20My%CC%83%20-%20ba%CC%89n%20chua%CC%82%CC%89n%202025-01.png?raw=true" class="logo-img">
+            <div class="logo-text">THỜI KHÓA BIỂU<br>VIETMY COLLEGE</div>
         </div>
-        <div class="filter-section shadow-sm">
-            <div class="row g-2">
-                <div class="col-4"><select id="selCoso" class="form-select" onchange="resetAndRender()"><option value="">CƠ SỞ</option></select></div>
-                <div class="col-4"><select id="selBuoi" class="form-select" onchange="resetAndRender()"><option value="">BUỔI</option><option value="SÁNG">SÁNG</option><option value="CHIỀU">CHIỀU</option><option value="TỐI">TỐI</option></select></div>
-                <div class="col-4"><input id="inpSearch" type="text" class="form-control" placeholder="Lớp, GV, Phòng..." oninput="resetAndRender()"></div>
-            </div>
-        </div>
-        <div class="pagination-container" id="pagination"></div>
-        <div id="loader" class="text-center py-4"><div class="spinner-border text-white spinner-border-sm"></div></div>
-        <div class="schedule-grid" id="gridContainer"></div>
+        <div class="total-badge">TỔNG LỚP : <span id="totalCount">0</span></div>
     </div>
 
+    <div id="fullDateDisplay" class="full-date-display">...</div>
+
+    <div class="date-container" id="dateNav"></div>
+
+    <div class="container-fluid px-3">
+        <div class="row g-2 mb-2">
+            <div class="col-3">
+                <select id="selCoso" class="form-select form-select-sm fw-bold shadow-none" onchange="resetPageAndRender()"><option value="">Cơ sở</option></select>
+            </div>
+            <div class="col-3">
+                <select id="selBuoi" class="form-select form-select-sm fw-bold shadow-none" onchange="resetPageAndRender()">
+                    <option value="">Buổi</option>
+                    <option value="SÁNG">SÁNG</option>
+                    <option value="CHIỀU">CHIỀU</option>
+                    <option value="TỐI">TỐI</option>
+                </select>
+            </div>
+            <div class="col-6">
+                <input id="inpSearch" class="form-control form-select-sm fw-bold shadow-none" placeholder="Tìm Lớp, Môn, GV..." oninput="resetPageAndRender()">
+            </div>
+        </div>
+    </div>
+    
+    <div class="pagination-wrapper" id="pagination"></div>
+    <div id="loader"><div class="spinner-border text-white" role="status"></div><div class="text-white mt-2">Đang tải nhanh...</div></div>
+    <div class="schedule-grid" id="grid"></div>
+
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfdMqp0x_IkwFA-1fxBAJONI4WmkEwyQS6Sxpi2eyz1Ft-EIRA-s50ociHmscsmvIu4A/exec";
-        let allData = {}; let currentDay = 'nay'; let currentPage = 1; const itemsPerPage = 20;
+        // ===============================================
+        const API_URL = "https://script.google.com/macros/s/AKfycbzVsNkv664Z1M9cM87C6nn3yRNvGEdKa5MJNHHF_GroYtea2TAd_JzPpK7yu072V-eVyA/exec";
+        // ===============================================
 
-        async function fetchData() {
-            const localData = localStorage.getItem('vm_cache');
-            if (localData) {
-                allData = JSON.parse(localData);
-                document.getElementById('loader').style.display = 'none';
-                updateCosoList(); render();
-            }
-            try {
-                const cb = SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + 't=' + Math.floor(Date.now()/60000);
-                const response = await fetch(cb, { redirect: 'follow' });
-                const newData = await response.json();
-                if (JSON.stringify(newData) !== localData) {
-                    allData = newData;
-                    localStorage.setItem('vm_cache', JSON.stringify(newData));
-                    document.getElementById('loader').style.display = 'none';
-                    updateCosoList(); render();
-                }
-            } catch (e) { if (!localData) document.getElementById('dateText').innerText = "LỖI KẾT NỐI!"; }
+        let allData = { schedule: [], available: [] };
+        let currentDate = "";
+        let currentPage = 1;
+        const itemsPerPage = 20; // 5 cột x 4 dòng = 20 (Số đẹp cho lưới 5 cột)
+
+        async function init() {
+            const d = new Date();
+            const todayStr = formatDate(d);
+            await loadData(todayStr);
         }
 
-        function updateCosoList() {
-            const combined = [...(allData.nay?.schedule || []), ...(allData.mai?.schedule || [])];
-            const cosos = [...new Set(combined.map(d => d.coso))].filter(c => c);
-            const sel = document.getElementById('selCoso');
-            const cur = sel.value;
-            sel.innerHTML = '<option value="">CƠ SỞ</option>';
-            cosos.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
-            sel.value = cur;
-        }
-
-        function changeDay(day) {
-            currentDay = day; currentPage = 1;
-            document.getElementById('btnNay').classList.toggle('active', day === 'nay');
-            document.getElementById('btnMai').classList.toggle('active', day === 'mai');
-            render();
-        }
-
-        function resetAndRender() { currentPage = 1; render(); }
-
-        function render() {
-            const container = document.getElementById('gridContainer');
-            const paginContainer = document.getElementById('pagination');
-            const data = allData[currentDay];
-            if (!data) return;
-            document.getElementById('dateText').innerText = data.date;
+        async function loadData(dateStr) {
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('grid').innerHTML = '';
+            document.getElementById('pagination').innerHTML = '';
+            currentDate = dateStr;
             
-            const coso = document.getElementById('selCoso').value;
-            const buoi = document.getElementById('selBuoi').value;
-            const search = document.getElementById('inpSearch').value.trim().toLowerCase();
+            // Cập nhật hiển thị ngày đầy đủ (Thứ..., ngày...)
+            updateFullDateDisplay(dateStr);
+            renderDateNav(); 
 
-            const filtered = data.schedule.filter(i => {
-                // ÉP KIỂU STRING ĐỂ TRÁNH LỖI KHI DỮ LIỆU LÀ SỐ
-                const sLop = String(i.lop || "").toLowerCase();
-                const sGv = String(i.gv || "").toLowerCase();
-                const sMon = String(i.mon || "").toLowerCase();
-                const sPhong = String(i.phong || "").toLowerCase();
-
-                const matchSearch = !search || 
-                    sLop.includes(search) || 
-                    sGv.includes(search) || 
-                    sMon.includes(search) || 
-                    sPhong.includes(search);
+            try {
+                // Thêm timestamp để bypass browser cache nhưng server apps script sẽ dùng cache của nó
+                const res = await fetch(`${API_URL}?date=${dateStr}&t=${Date.now()}`);
+                const data = await res.json();
                 
-                return (!coso || i.coso === coso) && (!buoi || String(i.buoi).toUpperCase().includes(buoi)) && matchSearch;
+                if(data.error) { alert("Lỗi: " + data.error); return; }
+
+                allData.available = data.available_sheets || [];
+                
+                // Sắp xếp thời gian
+                let rawSchedule = data.schedule || [];
+                allData.schedule = rawSchedule.sort((a, b) => parseTime(a.gio) - parseTime(b.gio));
+
+                renderDateNav();
+                updateCosoDropdown();
+                resetPageAndRender();
+
+            } catch(e) {
+                console.error(e);
+                document.getElementById('grid').innerHTML = '<div class="text-white text-center w-100 p-3">Lỗi kết nối Server!</div>';
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        }
+
+        function updateFullDateDisplay(dateStr) {
+            const parts = dateStr.split('/');
+            const d = new Date(parts[2], parts[1] - 1, parts[0]);
+            const days = ['CHỦ NHẬT', 'THỨ 2', 'THỨ 3', 'THỨ 4', 'THỨ 5', 'THỨ 6', 'THỨ 7'];
+            const dayName = days[d.getDay()];
+            document.getElementById('fullDateDisplay').innerText = `${dayName}, ${dateStr}`;
+        }
+
+        function parseTime(timeStr) {
+            if (!timeStr) return 9999;
+            try {
+                const firstPart = timeStr.split('-')[0].trim();
+                const parts = firstPart.split(/[:h]/);
+                let h = parseInt(parts[0]);
+                let m = parts[1] ? parseInt(parts[1]) : 0;
+                return h * 60 + m;
+            } catch (e) { return 9999; }
+        }
+
+        function resetPageAndRender() { currentPage = 1; renderGrid(); }
+
+        function renderGrid() {
+            const grid = document.getElementById('grid');
+            const pagin = document.getElementById('pagination');
+            const cosoFilter = document.getElementById('selCoso').value;
+            const buoiFilter = document.getElementById('selBuoi').value;
+            const searchFilter = document.getElementById('inpSearch').value.toLowerCase();
+
+            const filtered = allData.schedule.filter(item => {
+                const searchStr = `${item.lop} ${item.mon} ${item.gv} ${item.phong} ${item.coso}`.toLowerCase();
+                
+                // Logic lọc: Cơ sở, Buổi, Search
+                const matchCoso = !cosoFilter || item.coso === cosoFilter;
+                const matchBuoi = !buoiFilter || (item.buoi && item.buoi.toUpperCase().includes(buoiFilter));
+                const matchSearch = !searchFilter || searchStr.includes(searchFilter);
+
+                return matchCoso && matchBuoi && matchSearch;
             });
 
-            document.getElementById('totalBadge').innerText = `TỔNG: ${filtered.length} LỚP`;
+            document.getElementById('totalCount').innerText = `${filtered.length}`;
+
+            if(filtered.length === 0) {
+                grid.innerHTML = '<div class="text-white text-center w-100 py-5" style="grid-column: 1 / -1">Không tìm thấy lịch học.</div>';
+                pagin.innerHTML = '';
+                return;
+            }
+
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             const start = (currentPage - 1) * itemsPerPage;
-            const paginatedItems = filtered.slice(start, start + itemsPerPage);
+            const pageData = filtered.slice(start, start + itemsPerPage);
 
-            container.innerHTML = paginatedItems.map(i => {
-                let p = String(i.phong || "");
-                let textPhong = (p.toLowerCase().includes("phòng") || p.toLowerCase().includes("online")) ? p : "Phòng " + p;
-                
-                return `<div class="class-card">
-                    <div class="card-left">
-                        <div class="badge-time">${i.gio}</div>
-                        <div class="lop-label">Lớp: ${i.lop}</div>
-                        <div class="phong-label">${textPhong}</div>
-                        <div class="mon-text">${i.mon}</div>
+            grid.innerHTML = pageData.map((item, index) => {
+                let phongHienThi = "";
+                if (item.coso && item.coso.toUpperCase().includes("ONLINE")) {
+                    phongHienThi = "Online";
+                } else {
+                    let p = String(item.phong || "").trim();
+                    phongHienThi = (p.toLowerCase().includes('phòng')) ? p : `P.${p}`;
+                }
+
+                const delay = (index % 10) * 0.05; 
+                const hasNote = item.note && item.note.trim() !== "";
+                const noteContent = hasNote ? `<i class="fa-solid fa-triangle-exclamation"></i> ${item.note}` : "";
+                const noteClass = hasNote ? "card-footer-note" : "card-footer-note note-empty";
+
+                return `
+                <div class="class-card animate__animated animate__zoomIn" style="animation-delay: ${delay}s">
+                    <div class="card-body-custom">
+                        <div class="col-left">
+                            <div class="badge-time">${item.gio}</div>
+                            <div class="text-class" title="${item.lop}">${item.lop}</div>
+                            <div class="text-subject" title="${item.mon}">${item.mon}</div>
+                        </div>
+                        <div class="col-right">
+                            <div class="text-gv"><i class="fa-solid fa-user"></i> <span>${item.gv || '--'}</span></div>
+                            <div class="info-row"><i class="fa-solid fa-map-pin"></i> ${item.coso}</div>
+                            <div class="badge-room">${phongHienThi}</div>
+                        </div>
                     </div>
-                    <div class="card-right">
-                        <div class="gv-text">GV: ${i.gv}</div>
-                        <div class="coso-text">${i.coso}</div>
-                        ${i.note ? `<div class="note-box">! ${i.note}</div>` : ''}
+                    <div class="${noteClass}">
+                        ${noteContent}
                     </div>
-                </div>`
+                </div>`;
             }).join('');
 
-            paginContainer.innerHTML = "";
-            if (totalPages > 1) {
-                for (let i = 1; i <= totalPages; i++) {
-                    paginContainer.innerHTML += `<button class="page-link ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            if(totalPages > 1) {
+                let html = '';
+                for(let i = 1; i <= totalPages; i++) {
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
                 }
-            }
+                pagin.innerHTML = html;
+            } else { pagin.innerHTML = ''; }
         }
 
-        function goToPage(page) { currentPage = page; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        fetchData();
+        function updateCosoDropdown() {
+            const sel = document.getElementById('selCoso');
+            const current = sel.value;
+            const list = [...new Set(allData.schedule.map(i => i.coso))].filter(Boolean);
+            sel.innerHTML = '<option value="">Cơ sở</option>' + list.map(c => `<option value="${c}">${c}</option>`).join('');
+            sel.value = current;
+        }
+
+        function renderDateNav() {
+            const nav = document.getElementById('dateNav');
+            nav.innerHTML = '';
+            const today = new Date();
+            for(let i=-5; i<=1; i++) {
+                const d = new Date(); d.setDate(today.getDate() + i);
+                const dStr = formatDate(d);
+                let isDisabled = (allData.available.length > 0 && !allData.available.includes(dStr));
+                
+                const btn = document.createElement('button');
+                btn.className = `date-btn ${dStr === currentDate ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
+                btn.innerHTML = `<div>${i===0?'HÔM NAY':d.getDate()+'/'+(d.getMonth()+1)}</div>`;
+                btn.onclick = () => { if(!isDisabled && dStr !== currentDate) loadData(dStr); };
+                nav.appendChild(btn);
+                if(dStr === currentDate) setTimeout(()=>btn.scrollIntoView({inline:"center",behavior:"smooth"}),100);
+            }
+        }
+        
+        function formatDate(date) {
+            return `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth()+1).padStart(2,'0')}/${date.getFullYear()}`;
+        }
+
+        function goToPage(p) { currentPage = p; renderGrid(); window.scrollTo({top:0, behavior:'smooth'}); }
+        
+        init();
     </script>
 </body>
 </html>
