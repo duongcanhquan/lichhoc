@@ -14,11 +14,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        :root {
-            /* Giảm độ đục (opacity) xuống 0.25 để nhìn xuyên thấu rõ hơn */
-            --glass: rgba(255, 255, 255, 0.3); 
-            /* Viền thẻ sáng nhẹ tạo cảm giác viền kính cắt */
-            --glass-border: rgba(255, 255, 255, 0.4);
+       :root {
+            /* Giảm độ đục xuống gần như trong suốt hoàn toàn (10%) */
+            --glass: rgba(255, 255, 255, 0.1); 
+            /* Tăng độ rõ của viền lên một chút (50%) để tách biệt thẻ với nền */
+            --glass-border: rgba(255, 255, 255, 0.5);
             --primary: #000000;
             --accent: #6F6F6F;
             --success: #059669; 
@@ -125,15 +125,14 @@
         @media (min-width: 1200px) { .schedule-grid { grid-template-columns: repeat(5, 1fr) !important; } }
         @media (min-width: 768px) and (max-width: 1199px) { .schedule-grid { grid-template-columns: repeat(3, 1fr); } }
 
-       /* CARD DESIGN - GLASSMORPHISM ĐỈNH CAO */
+      /* CARD DESIGN - GLASSMORPHISM TRONG VẮT */
         .class-card {
             background: var(--glass); 
-            /* Blur 10px là điểm "ngọt" nhất: Đủ mờ để chữ dễ đọc, nhưng vẫn thấy rõ video chạy */
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px);
+            /* Giảm blur xuống 5px để nhìn video phía sau rõ nét hơn */
+            backdrop-filter: blur(5px); 
+            -webkit-backdrop-filter: blur(5px);
             border-radius: 16px;
-            /* Tăng độ bóng (shadow) một chút để thẻ nổi bật lên khỏi nền video */
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
             border: 1px solid var(--glass-border);
             display: flex; flex-direction: column; justify-content: space-between;
             height: 100%; overflow: hidden;
@@ -183,10 +182,15 @@
             font-weight: 700; font-size: 0.7rem; border: 1px solid rgba(5, 150, 105, 0.2); width: fit-content;
         }
 
+        /* NOTE FIX: Làm trong suốt phần nền đỏ */
         .card-footer-note {
-            background: rgba(220, 38, 38, 0.05); color: var(--danger); font-size: 0.7rem; font-weight: 600;
-            padding: 8px 12px; border-top: 1px dashed rgba(220,38,38,0.1);
-            border-radius: 0 0 16px 16px; white-space: normal; word-break: break-word; line-height: 1.4;
+            background: rgba(220, 38, 38, 0.05); /* Đổi màu nền thành hơi đỏ trong suốt */
+            color: var(--danger); font-size: 0.65rem; font-weight: 700;
+            padding: 6px 10px; border-top: 1px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 0 0 16px 16px;
+            white-space: normal; 
+            word-break: break-word;
+            line-height: 1.3;
         }
         .note-empty { background: transparent; border-top: 1px dashed transparent; }
 
