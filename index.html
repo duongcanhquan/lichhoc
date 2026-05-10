@@ -3,184 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Lịch Học VietMy College</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Thời Khóa Biểu | VietMy College</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.98); /* Tăng độ đậm nền để chữ dễ đọc hơn */
-            --primary: #667eea; --accent: #764ba2;
-            --success: #059669; --danger: #dc2626;
-            --bg-grad: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            /* Hệ màu tối giản Black/White/Gray */
+            --glass: rgba(255, 255, 255, 0.65); /* Trong suốt hơn để thấy video */
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --primary: #000000;
+            --accent: #6F6F6F;
+            --success: #059669; 
+            --danger: #dc2626;
         }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: var(--bg-grad); background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            min-height: 100vh; margin: 0; color: #333; padding-bottom: 50px;
+            font-family: 'Inter', sans-serif;
+            margin: 0; color: #000000; padding-bottom: 50px;
+            background-color: #ffffff;
+            min-height: 100vh;
         }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* --- BACKGROUND VIDEO CINEMATIC --- */
+        .video-bg-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: #ffffff;
+        }
+        #bgVideo {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0; /* Sẽ được JS điều khiển để fade in/out */
+            transition: opacity 0.5s ease-in-out;
+            /* Đẩy video xuống một chút theo prompt, nhưng cover toàn màn hình để k bị hở */
+            transform: scale(1.05); 
+        }
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            /* Gradient: Trắng ở top và bottom, trong suốt ở giữa để khoe video */
+            background: linear-gradient(to bottom, 
+                rgba(255,255,255,1) 0%, 
+                rgba(255,255,255,0.8) 15%, 
+                rgba(255,255,255,0.2) 50%, 
+                rgba(255,255,255,0.8) 85%, 
+                rgba(255,255,255,1) 100%);
+            pointer-events: none;
+        }
 
         /* HEADER */
         .glass-header {
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-            padding: 8px 15px; position: sticky; top: 0; z-index: 1000;
-            border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.85); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 12px 20px; position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
             display: flex; justify-content: space-between; align-items: center;
         }
-        .header-left { display: flex; align-items: center; gap: 8px; }
-        .logo-img { height: 38px; width: auto; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .logo-img { height: 40px; width: auto; }
         .logo-text { 
-            font-weight: 800; font-size: 0.8rem; text-transform: uppercase;
-            background: linear-gradient(to right, #667eea, #764ba2); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            line-height: 1.1;
+            font-family: 'Instrument Serif', serif; /* Font nghệ thuật */
+            font-weight: 400; font-size: 1.3rem; 
+            color: #000000; line-height: 1; letter-spacing: -0.5px;
+        }
+        .logo-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem; font-weight: 600; color: #6F6F6F;
+            letter-spacing: 1px; text-transform: uppercase;
         }
         .total-badge {
-            background: #212529; color: white; font-weight: 700; font-size: 0.7rem;
-            padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+            background: #000000; color: white; font-weight: 500; font-size: 0.75rem;
+            padding: 6px 14px; border-radius: 50px; white-space: nowrap;
         }
 
         /* NGÀY THÁNG FULL */
         .full-date-display {
-            text-align: center; color: white; font-weight: 700; font-size: 0.9rem;
-            padding: 10px 0 5px 0; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            text-transform: uppercase; letter-spacing: 0.5px;
+            text-align: center; color: #000000; font-weight: 400; font-size: 1.5rem;
+            padding: 20px 0 10px 0; 
+            font-family: 'Instrument Serif', serif;
+            letter-spacing: -0.5px;
         }
 
         /* DATE NAVIGATOR */
         .date-container { overflow-x: auto; white-space: nowrap; padding: 5px 10px; text-align: center; scrollbar-width: none; }
         .date-btn {
-            border: none; background: rgba(255,255,255,0.4); padding: 8px 14px; margin: 0 2px; border-radius: 10px;
-            font-weight: 700; font-size: 0.75rem; transition: 0.3s; display: inline-block;
+            border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); 
+            padding: 8px 16px; margin: 0 4px; border-radius: 50px; /* Bo tròn viên thuốc */
+            font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.75rem; 
+            transition: all 0.3s ease; display: inline-block; color: #6F6F6F;
+            backdrop-filter: blur(10px);
         }
-        .date-btn.active { background: #fff; color: var(--accent); transform: scale(1.05); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
-        .date-btn.disabled { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
+        .date-btn.active { background: #000000; color: #ffffff; border-color: #000000; transform: scale(1.03); }
+        .date-btn.disabled { opacity: 0.3; filter: grayscale(1); pointer-events: none; }
 
-        /* GRID SYSTEM: 5 CỘT DESKTOP - 2 CỘT MOBILE */
+        /* BỘ LỌC */
+        .filter-input {
+            background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            color: #000000;
+            backdrop-filter: blur(10px);
+        }
+        .filter-input:focus { background: #ffffff; border-color: #000000; box-shadow: none; }
+
+        /* GRID SYSTEM */
         .schedule-grid {
-            display: grid;
-            gap: 10px; padding: 10px;
-            grid-template-columns: repeat(2, 1fr); /* Mobile: 2 cột */
-            align-items: flex-start; /* Để ô co giãn tự nhiên */
+            display: grid; gap: 12px; padding: 15px;
+            grid-template-columns: repeat(2, 1fr); align-items: stretch;
         }
-        
-        /* Desktop (Màn hình lớn): 5 CỘT */
-        @media (min-width: 1200px) { 
-            .schedule-grid { grid-template-columns: repeat(5, 1fr) !important; } 
-        }
-        /* Laptop/Tablet: 3 cột */
-        @media (min-width: 768px) and (max-width: 1199px) { 
-            .schedule-grid { grid-template-columns: repeat(3, 1fr); } 
-        }
+        @media (min-width: 1200px) { .schedule-grid { grid-template-columns: repeat(5, 1fr) !important; } }
+        @media (min-width: 768px) and (max-width: 1199px) { .schedule-grid { grid-template-columns: repeat(3, 1fr); } }
 
-        /* CARD DESIGN - CHO PHÉP GIÃN DÒNG */
+        /* CARD DESIGN - GLASSMORPHISM ĐỈNH CAO */
         .class-card {
-            background: var(--glass); border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255,255,255,0.5);
+            background: var(--glass); 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            border: 1px solid var(--glass-border);
             display: flex; flex-direction: column; justify-content: space-between;
-            height: 100%; /* Giữ height 100% để các ô trong cùng hàng bằng nhau */
+            height: 100%; overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        .class-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
         
-        .card-body-custom { padding: 10px; flex: 1; display: flex; gap: 6px; }
+        .card-body-custom { padding: 12px; flex: 1; display: flex; gap: 8px; }
 
         .col-left { 
             flex: 1.2; display: flex; flex-direction: column; gap: 5px; 
-            border-right: 1px dashed #cbd5e1; padding-right: 6px;
+            border-right: 1px dashed rgba(0,0,0,0.1); padding-right: 8px;
         }
         .col-right { 
             flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; 
-            padding-left: 2px;
+            padding-left: 4px;
         }
 
-        /* --- PHẦN CHỈNH SỬA QUAN TRỌNG NHẤT: BỎ CẮT CHỮ --- */
-        
+        /* TEXT STYLING */
         .badge-time { 
-            background: var(--accent); color: white; font-size: 0.7rem; font-weight: 800; 
-            padding: 3px 8px; border-radius: 6px; align-self: flex-start;
-            white-space: nowrap; /* Giờ thì không cần xuống dòng */
+            background: #000000; color: #ffffff; font-size: 0.7rem; font-weight: 600; 
+            padding: 3px 10px; border-radius: 50px; align-self: flex-start;
+            white-space: nowrap; letter-spacing: 0.5px;
         }
-
         .text-class { 
-            font-size: 0.95rem; font-weight: 800; color: #1a202c; 
-            /* Cho phép xuống dòng thoải mái */
-            white-space: normal; 
-            word-break: break-word;
-            line-height: 1.2;
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.3rem; font-weight: 400; color: #000000; 
+            white-space: normal; word-break: break-word; line-height: 1.1;
+            margin-top: 4px;
         }
-
         .text-subject { 
-            font-size: 0.7rem; font-weight: 600; color: #555; 
-            line-height: 1.3;
-            /* Hiển thị hết, không cắt */
-            white-space: normal;
+            font-size: 0.7rem; font-weight: 500; color: #6F6F6F; 
+            line-height: 1.4; white-space: normal;
         }
         
         .text-gv { 
-            color: var(--primary); font-size: 0.7rem; font-weight: 700;
-            display: flex; align-items: flex-start; gap: 4px;
-            /* Cho phép tên GV xuống dòng */
-            white-space: normal; 
-            line-height: 1.2;
+            color: #000000; font-size: 0.75rem; font-weight: 600;
+            display: flex; align-items: flex-start; gap: 6px;
+            white-space: normal; line-height: 1.3;
         }
         
-        .info-row { 
-            font-size: 0.65rem; font-weight: 700; display: flex; align-items: flex-start; gap: 4px; color: #64748b; 
-            white-space: normal; /* Địa điểm dài cũng xuống dòng */
-        }
+        .info-row { font-size: 0.65rem; font-weight: 500; display: flex; align-items: flex-start; gap: 6px; color: #6F6F6F; white-space: normal; }
         
         .badge-room { 
-            background: #d1fae5; color: var(--success); padding: 3px 8px; border-radius: 8px; 
-            font-weight: 800; font-size: 0.7rem; border: 1px solid #34d399; width: fit-content;
+            background: rgba(5, 150, 105, 0.1); color: var(--success); 
+            padding: 4px 10px; border-radius: 8px; 
+            font-weight: 700; font-size: 0.7rem; border: 1px solid rgba(5, 150, 105, 0.2); width: fit-content;
         }
 
-        /* NOTE FIX: Hiển thị hết, không giới hạn dòng */
         .card-footer-note {
-            background: #fff1f2; color: var(--danger); font-size: 0.65rem; font-weight: 700;
-            padding: 6px 10px; border-top: 1px dashed rgba(220,38,38,0.2);
-            border-radius: 0 0 12px 12px;
-            white-space: normal; /* Xuống dòng thoải mái */
-            word-break: break-word;
-            line-height: 1.3;
+            background: rgba(220, 38, 38, 0.05); color: var(--danger); font-size: 0.7rem; font-weight: 600;
+            padding: 8px 12px; border-top: 1px dashed rgba(220,38,38,0.1);
+            border-radius: 0 0 16px 16px; white-space: normal; word-break: break-word; line-height: 1.4;
         }
+        .note-empty { background: transparent; border-top: 1px dashed transparent; }
 
         /* PAGINATION */
-        .pagination-wrapper { display: flex; gap: 5px; padding: 5px 15px 10px 15px; flex-wrap: wrap; }
+        .pagination-wrapper { display: flex; gap: 6px; padding: 10px 15px 20px 15px; flex-wrap: wrap; }
         .page-btn { 
-            width: 32px; height: 32px; border: none; border-radius: 8px; background: rgba(255,255,255,0.6); 
-            font-weight: 800; color: #555; font-size: 0.8rem; transition: 0.2s;
+            width: 36px; height: 36px; border: 1px solid rgba(0,0,0,0.1); border-radius: 50%; 
+            background: rgba(255,255,255,0.5); backdrop-filter: blur(10px);
+            font-weight: 600; color: #6F6F6F; font-size: 0.85rem; transition: 0.3s;
         }
-        .page-btn.active { background: var(--accent); color: white; transform: scale(1.1); }
+        .page-btn.active { background: #000000; color: #ffffff; border-color: #000000; transform: scale(1.05); }
 
-        #loader { text-align: center; color: white; padding: 40px; display: none; }
+        #loader { text-align: center; color: #000000; padding: 60px; display: none; }
     </style>
 </head>
 <body>
 
+    <div class="video-bg-container">
+        <video id="bgVideo" muted playsinline>
+            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
     <div class="glass-header">
         <div class="header-left">
             <img src="https://github.com/duongcanhquan/image/blob/main/Logo%20Cao%20%C4%91a%CC%86%CC%89ng%20Vie%CC%A3%CC%82t%20My%CC%83%20-%20ba%CC%89n%20chua%CC%82%CC%89n%202025-01.png?raw=true" class="logo-img">
-            <div class="logo-text">THỜI KHÓA BIỂU<br>VIETMY COLLEGE</div>
+            <div>
+                <div class="logo-text">VietMy College</div>
+                <div class="logo-sub">Thời Khóa Biểu</div>
+            </div>
         </div>
-        <div class="total-badge">TỔNG LỚP : <span id="totalCount">0</span></div>
+        <div class="total-badge">Lớp: <span id="totalCount">0</span></div>
     </div>
 
     <div id="fullDateDisplay" class="full-date-display">...</div>
 
     <div class="date-container" id="dateNav"></div>
 
-    <div class="container-fluid px-3">
+    <div class="container-fluid px-3 mt-2">
         <div class="row g-2 mb-2">
             <div class="col-3">
-                <select id="selCoso" class="form-select form-select-sm fw-bold shadow-none" onchange="resetPageAndRender()"><option value="">Cơ sở</option></select>
+                <select id="selCoso" class="form-select form-select-sm fw-medium filter-input shadow-none" onchange="resetPageAndRender()"><option value="">Cơ sở</option></select>
             </div>
             <div class="col-3">
-                <select id="selBuoi" class="form-select form-select-sm fw-bold shadow-none" onchange="resetPageAndRender()">
+                <select id="selBuoi" class="form-select form-select-sm fw-medium filter-input shadow-none" onchange="resetPageAndRender()">
                     <option value="">Buổi</option>
                     <option value="SÁNG">SÁNG</option>
                     <option value="CHIỀU">CHIỀU</option>
@@ -188,18 +234,21 @@
                 </select>
             </div>
             <div class="col-6">
-                <input id="inpSearch" class="form-control form-select-sm fw-bold shadow-none" placeholder="Tìm Lớp, Môn, GV..." oninput="resetPageAndRender()">
+                <input id="inpSearch" class="form-control form-select-sm fw-medium filter-input shadow-none" placeholder="Lớp, môn, giảng viên..." oninput="resetPageAndRender()">
             </div>
         </div>
     </div>
     
     <div class="pagination-wrapper" id="pagination"></div>
-    <div id="loader"><div class="spinner-border text-white" role="status"></div></div>
+    <div id="loader">
+        <div class="spinner-border text-dark" role="status"></div>
+        <div class="mt-2 fw-medium text-muted">Đang đồng bộ dữ liệu...</div>
+    </div>
     <div class="schedule-grid" id="grid"></div>
 
     <script>
         // ===============================================
-        // THAY LINK API CỦA BẠN VÀO ĐÂY
+        // ĐIỀN LINK API CỦA BẠN VÀO ĐÂY
         const API_URL = "https://script.google.com/macros/s/AKfycbzVsNkv664Z1M9cM87C6nn3yRNvGEdKa5MJNHHF_GroYtea2TAd_JzPpK7yu072V-eVyA/exec";
         // ===============================================
 
@@ -208,12 +257,51 @@
         let currentPage = 1;
         const itemsPerPage = 20; 
 
+        // --- XỬ LÝ VIDEO LOOP MƯỢT MÀ THEO YÊU CẦU ---
+        function initVideoBackground() {
+            const video = document.getElementById('bgVideo');
+            if (!video) return;
+
+            video.play().catch(e => console.log("Trình duyệt chặn Autoplay"));
+
+            let isFadingOut = false;
+
+            function updateVideoOpacity() {
+                if (video.duration) {
+                    const timeLeft = video.duration - video.currentTime;
+                    // Fade in lúc bắt đầu (0.5s đầu)
+                    if (video.currentTime < 0.5) {
+                        video.style.opacity = "1";
+                        isFadingOut = false;
+                    }
+                    // Fade out trước khi kết thúc (0.5s cuối)
+                    if (timeLeft <= 0.5 && !isFadingOut) {
+                        video.style.opacity = "0";
+                        isFadingOut = true;
+                    }
+                }
+                requestAnimationFrame(updateVideoOpacity);
+            }
+
+            video.addEventListener('ended', () => {
+                video.style.opacity = "0";
+                setTimeout(() => {
+                    video.currentTime = 0;
+                    video.play();
+                }, 100);
+            });
+
+            requestAnimationFrame(updateVideoOpacity);
+        }
+
         async function init() {
+            initVideoBackground(); // Khởi chạy video background
             const d = new Date();
             const todayStr = formatDate(d);
             await loadData(todayStr);
         }
 
+        // --- LOGIC LẤY DATA (GIỮ NGUYÊN) ---
         async function loadData(dateStr) {
             document.getElementById('loader').style.display = 'block';
             document.getElementById('grid').innerHTML = '';
@@ -223,7 +311,6 @@
             renderDateNav(); 
 
             try {
-                // Thêm timestamp bypass cache
                 const res = await fetch(`${API_URL}?date=${dateStr}&t=${Date.now()}`);
                 const data = await res.json();
                 
@@ -231,7 +318,6 @@
 
                 allData.available = data.available_sheets || [];
                 let rawSchedule = data.schedule || [];
-                // Sắp xếp theo giờ
                 allData.schedule = rawSchedule.sort((a, b) => parseTime(a.gio) - parseTime(b.gio));
 
                 renderDateNav();
@@ -239,8 +325,7 @@
                 resetPageAndRender();
 
             } catch(e) {
-                console.error(e);
-                document.getElementById('grid').innerHTML = '<div class="text-white text-center w-100 p-3">Lỗi kết nối Server!</div>';
+                document.getElementById('grid').innerHTML = '<div class="text-center w-100 p-3 text-muted">Lỗi kết nối Server!</div>';
             } finally {
                 document.getElementById('loader').style.display = 'none';
             }
@@ -285,7 +370,7 @@
             document.getElementById('totalCount').innerText = `${filtered.length}`;
 
             if(filtered.length === 0) {
-                grid.innerHTML = '<div class="text-white text-center w-100 py-5" style="grid-column: 1 / -1">Không tìm thấy lịch học.</div>';
+                grid.innerHTML = '<div class="text-center w-100 py-5 text-muted" style="grid-column: 1 / -1">Không tìm thấy lịch học.</div>';
                 pagin.innerHTML = '';
                 return;
             }
@@ -305,9 +390,7 @@
 
                 const delay = (index % 10) * 0.05; 
                 const hasNote = item.note && item.note.trim() !== "";
-                const noteContent = hasNote ? `<i class="fa-solid fa-triangle-exclamation"></i> ${item.note}` : "";
-                
-                // Nếu có note thì hiện, không thì ẩn luôn
+                const noteContent = hasNote ? `<i class="fa-solid fa-circle-exclamation me-1"></i> ${item.note}` : "";
                 const noteDiv = hasNote ? `<div class="card-footer-note">${noteContent}</div>` : '';
 
                 return `
@@ -315,15 +398,15 @@
                     <div class="card-body-custom">
                         <div class="col-left">
                             <div class="badge-time">${item.gio}</div>
-                            <div class="text-class" title="${item.lop}">${item.lop}</div>
-                            <div class="text-subject" title="${item.mon}">${item.mon}</div>
+                            <div class="text-class">${item.lop}</div>
+                            <div class="text-subject">${item.mon}</div>
                         </div>
                         <div class="col-right">
                             <div class="text-gv">
                                 <i class="fa-solid fa-user" style="margin-top:2px;"></i> 
                                 <span>${item.gv || '--'}</span>
                             </div>
-                            <div class="info-row"><i class="fa-solid fa-map-pin"></i> ${item.coso}</div>
+                            <div class="info-row"><i class="fa-solid fa-location-dot"></i> ${item.coso}</div>
                             <div class="badge-room">${phongHienThi}</div>
                         </div>
                     </div>
@@ -375,4 +458,7 @@
     </script>
 </body>
 </html>
+
+
+     
 
